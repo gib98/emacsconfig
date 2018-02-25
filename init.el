@@ -15,6 +15,8 @@
 (delete-selection-mode 1)
 (setq-default ispell-program-name "/usr/local/bin/ispell")
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'find-file-hook #'electric-pair-mode)
+
 
 ;; UTF-8 everywhere
 (prefer-coding-system 'utf-8)
@@ -77,11 +79,12 @@
 
 
 (add-to-list 'load-path
-              "~/.emacs.d/lisp/yasnippet")
+              "~/.emacs.d/elpa/yasnippet-0.12.2")
 (require 'yasnippet)
 (yas-global-mode 1)
 
 (require 'package) ;; You might already have this line
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
        (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
@@ -89,16 +92,12 @@
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+
+
 (package-initialize) ;; You might already have this line
 
 
-(require 'mmm-auto)
-(setq mmm-global-mode 'maybe)
-(mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
-(mmm-add-mode-ext-class 'html-mode "\\.html\\'" 'html-js)
-(mmm-add-mode-ext-class 'html-mode "\\.html\\'" 'html-css)
 
-(global-set-key (kbd "C-x g") 'magit-status)
 
 
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -106,3 +105,43 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+
+(require 'powerline)
+
+(powerline-default-theme)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+ '(custom-enabled-themes (quote (xresources)))
+ '(custom-safe-themes
+   (quote
+    ("065efdd71e6d1502877fd5621b984cded01717930639ded0e569e1724d058af8" default)))
+ '(inhibit-startup-screen t)
+ '(org-agenda-files (quote ("~/Dropbox/hw.org")))
+ '(package-selected-packages
+   (quote
+    (markdown-mode edit-indirect-region-latex org-tree-slide htmlize java-snippets yasnippet-snippets xresources-theme yasnippet web-mode web-beautify vue-mode powerline multiple-cursors moe-theme magit company afternoon-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+
+(require 'ox-md nil t)
+
+
+(require 'chuck-mode)
+(setf org-src-fontify-natively t)
+
+(ac-config-default)
